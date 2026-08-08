@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Opening Snack Isle…</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 32px 20px 80px;
+    color: #1A1712;
+    line-height: 1.6;
+    background: #fdf6e8;
+    text-align: center;
+  }
+  h1 { color: #5C3D8A; font-size: 22px; margin: 40px 0 8px; }
+  p { font-size: 15px; margin: 0 0 12px; color: #4A4438; }
+  a.store-link {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 12px 24px;
+    background: #5C3D8A;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 15px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Opening Snack Isle…</h1>
+<p>If nothing happens, you may not have the app installed yet.</p>
+<a class="store-link" id="storeLink" href="https://apps.apple.com/us/app/snack-isle/id6791022824">Get Snack Isle on the App Store</a>
+
+<script>
+  // Shared-link landing page: shared snack/profile/etc. links point HERE
+  // (a normal webpage, not the app's own snack-isle:// scheme directly) so
+  // that someone WITHOUT the app installed lands somewhere useful instead
+  // of a dead "cannot open page" error — a plain custom URL scheme has no
+  // OS-level fallback behavior of its own.
+  //
+  // ?to=<path> carries where inside the app to land (e.g. "snack/abc123");
+  // defaults to the app's root if missing/malformed. Attempts the deep
+  // link immediately, then falls back to the App Store after a short delay
+  // ONLY if the tab is still visible/foregrounded — if the OS actually
+  // switched to the app (the deep link worked), the page is backgrounded
+  // and this fallback never fires. Not a true Universal Link (that needs a
+  // verified owned domain this project doesn't have yet — see docs/
+  // ROADMAP.md's Infrastructure section) — this is the "just JavaScript"
+  // middle ground: a visible redirect hop, but no domain ownership needed,
+  // hosted on the same GitHub Pages site as the rest of the legal pages.
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    var to = params.get("to") || "";
+    // Guards against an arbitrary/malicious `to` value being reflected
+    // straight into a custom-scheme URL — only allow the characters an
+    // actual expo-router path segment would ever contain.
+    var safeTo = /^[A-Za-z0-9/_-]*$/.test(to) ? to : "";
+    var appLink = "snack-isle://" + safeTo;
+
+    var fallbackTimer = setTimeout(function () {
+      window.location.href = document.getElementById("storeLink").href;
+    }, 1500);
+
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden) clearTimeout(fallbackTimer);
+    });
+
+    window.location.href = appLink;
+  })();
+</script>
+
+</body>
+</html>
