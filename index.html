@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snack Isle — find and rank the snacks you actually love</title>
+<meta name="description" content="Scan a snack's barcode, compare it against what you've already tried, and build a ranked list that means something. See where friends' scores land, browse community favorites, and track down snacks nearby.">
+
+<!-- Favicon / home-screen icons -->
+<link rel="icon" type="image/png" sizes="32x32" href="assets/logo/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/logo/favicon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/logo/apple-touch-icon.png">
+
+<!-- Social share previews (iMessage, TikTok bio link, X, etc.) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Snack Isle">
+<meta property="og:title" content="Snack Isle — find and rank the snacks you actually love">
+<meta property="og:description" content="Scan a barcode, compare it against what you've already tried, and build a ranked list that means something.">
+<meta property="og:image" content="https://haywoodtofu.github.io/snack-isle-legal/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://haywoodtofu.github.io/snack-isle-legal/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Snack Isle — find and rank the snacks you actually love">
+<meta name="twitter:description" content="Scan a barcode, compare it against what you've already tried, and build a ranked list that means something.">
+<meta name="twitter:image" content="https://haywoodtofu.github.io/snack-isle-legal/assets/og-image.jpg">
+
+<!-- Same two families the app itself ships (app/_layout.tsx's useFonts call)
+     — Quicksand for display, Plus Jakarta Sans for body — so the landing
+     page reads as the same product, not a generic marketing template. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #fdf6e8;
+    --bg-deep: #f6ecd6;
+    --ink: #241c12;
+    --muted: #6b5f4d;
+    --primary: #5C3D8A;
+    --primary-deep: #452c6b;
+    --gold: #d9a94a;
+    --card-border: rgba(92, 61, 138, 0.14);
+    --card-shadow: 0 18px 40px rgba(36, 28, 18, 0.10);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Plus Jakarta Sans", -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  img { max-width: 100%; display: block; }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  a { color: inherit; }
+
+  /* ---- Nav ---- */
+
+  nav.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 24px;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: "Comfortaa", sans-serif;
+    font-weight: 700;
+    font-size: 19px;
+    color: var(--primary);
+    text-decoration: none;
+  }
+
+  .brand img { width: 34px; height: 34px; }
+
+  .nav-cta {
+    display: inline-block;
+    padding: 9px 18px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  /* ---- Hero ---- */
+
+  header.hero {
+    padding: 40px 0 64px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 48px;
+    align-items: center;
+  }
+
+  @media (max-width: 860px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-shot { order: -1; max-width: 320px; margin: 0 auto; }
+  }
+
+  .eyebrow {
+    display: inline-block;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--primary);
+    background: rgba(92, 61, 138, 0.09);
+    padding: 6px 12px;
+    border-radius: 100px;
+    margin-bottom: 18px;
+  }
+
+  h1 {
+    font-family: "Comfortaa", sans-serif;
+    font-weight: 700;
+    font-size: clamp(32px, 4.6vw, 50px);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    margin: 0 0 18px;
+    color: var(--primary-deep);
+    text-wrap: balance;
+  }
+
+  .hero p.lede {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 46ch;
+    margin: 0 0 30px;
+  }
+
+  .cta-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--primary);
+    color: #fff;
+    padding: 15px 26px;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 16px;
+    text-decoration: none;
+    box-shadow: 0 10px 24px rgba(92, 61, 138, 0.28);
+  }
+
+  .rating-note {
+    font-size: 13.5px;
+    color: var(--muted);
+  }
+
+  .hero-shot {
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--card-border);
+    transform: rotate(-2deg);
+  }
+
+  /* ---- Sections ---- */
+
+  section { padding: 56px 0; }
+
+  .section-head {
+    max-width: 56ch;
+    margin: 0 0 36px;
+  }
+
+  .section-head .eyebrow { margin-bottom: 12px; }
+
+  h2 {
+    font-family: "Comfortaa", sans-serif;
+    font-weight: 700;
+    font-size: clamp(24px, 3vw, 32px);
+    color: var(--primary-deep);
+    margin: 0 0 10px;
+    text-wrap: balance;
+  }
+
+  .section-head p { color: var(--muted); font-size: 16px; margin: 0; }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  @media (max-width: 780px) {
+    .steps { grid-template-columns: 1fr; }
+  }
+
+  .step-card {
+    background: #fff;
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 26px 22px;
+    box-shadow: 0 4px 16px rgba(36, 28, 18, 0.05);
+  }
+
+  .step-num {
+    font-family: "Comfortaa", sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--gold);
+    letter-spacing: 0.06em;
+    margin-bottom: 10px;
+  }
+
+  .step-card h3 {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    margin: 0 0 8px;
+    color: var(--ink);
+  }
+
+  .step-card p {
+    margin: 0;
+    font-size: 14.5px;
+    color: var(--muted);
+  }
+
+  /* ---- Showcase (screenshots + copy) ---- */
+
+  .showcase {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .showcase.reverse .showcase-copy { order: 2; }
+
+  @media (max-width: 860px) {
+    .showcase, .showcase.reverse { grid-template-columns: 1fr; }
+    .showcase.reverse .showcase-copy { order: 0; }
+  }
+
+  .showcase img {
+    border-radius: 22px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--card-border);
+  }
+
+  .showcase-copy h2 { margin-bottom: 14px; }
+  .showcase-copy p { color: var(--muted); font-size: 16px; margin: 0 0 12px; }
+
+  /* ---- Footer ---- */
+
+  footer {
+    padding: 48px 0 40px;
+    border-top: 1px solid var(--card-border);
+    margin-top: 40px;
+  }
+
+  .footer-grid {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 18px;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .footer-links a { text-decoration: none; }
+  .footer-links a:hover { color: var(--primary); }
+
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: "Comfortaa", sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--primary-deep);
+  }
+
+  .footer-brand img { width: 22px; height: 22px; }
+
+  .copyright { font-size: 12.5px; color: var(--muted); margin-top: 18px; }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <a class="brand" href="#top">
+    <img src="assets/logo/snack-isle-logo.png" alt="">
+    Snack Isle
+  </a>
+  <a class="nav-cta" href="https://apps.apple.com/us/app/snack-isle/id6791022824">Get the app</a>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">Now on the App Store</span>
+      <h1>Find and rank the snacks you actually love.</h1>
+      <p class="lede">
+        Scan a barcode, see how your friends rated it, and build a ranked
+        list that means something — because you can't just give everything
+        a 10/10.
+      </p>
+      <div class="cta-row">
+        <a class="btn-primary" href="https://apps.apple.com/us/app/snack-isle/id6791022824">
+          Get Snack Isle — free
+        </a>
+      </div>
+    </div>
+    <img class="hero-shot" src="assets/screenshots/screenshot-1.jpg" alt="Snack Isle app screenshot — rating and discovering snacks">
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">How it works</span>
+      <h2>Snacking, turned into something worth tracking.</h2>
+      <p>Three steps, every time you try something new.</p>
+    </div>
+    <div class="steps">
+      <div class="step-card">
+        <div class="step-num">AT THE STORE</div>
+        <h3>Scan it</h3>
+        <p>Curious about a snack? Scan the barcode and see how your friends
+          rated it, along with everyone else who has.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">AFTER YOU TRY IT</div>
+        <h3>Rank it</h3>
+        <p>Compare it against snacks you've already rated to build a ranked
+          list over time — no rushed 10/10s, just an honest pecking order.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">ANY TIME</div>
+        <h3>Discover more</h3>
+        <p>Browse what the community already loves, see where a snack was
+          spotted in stores, and earn small achievements along the way.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap showcase">
+    <img src="assets/screenshots/screenshot-2.jpg" alt="Snack Isle app screenshot — friends feed">
+    <div class="showcase-copy">
+      <span class="eyebrow">Ratings that mean something</span>
+      <h2>You don't just slap a 10/10 on everything.</h2>
+      <p>
+        Every new snack gets compared head-to-head against ones you've
+        already tried — you pick a favorite, so your ratings actually
+        reflect how you really feel, not just a gut reaction in the aisle.
+      </p>
+      <p>
+        Friends' scores show up right alongside yours, so you can see who
+        actually agrees with your taste and who's completely wrong about
+        pickle-flavored chips.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap showcase reverse">
+    <img src="assets/screenshots/screenshot-3.jpg" alt="Snack Isle app screenshot — scanning a barcode">
+    <div class="showcase-copy">
+      <span class="eyebrow">Beyond your own list</span>
+      <h2>See what's worth trying next.</h2>
+      <p>
+        Browse the snacks the whole community already loves, check where a
+        specific snack has been spotted nearby, and unlock small
+        achievements as you go — snacking turns into a bit of a game
+        without ever feeling like homework.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap" style="text-align:center; padding: 24px 24px 8px;">
+    <h2 style="margin-bottom: 14px;">Ready to start ranking?</h2>
+    <p style="color: var(--muted); font-size: 16px; margin: 0 0 26px;">Free to download. iPhone only, for now.</p>
+    <a class="btn-primary" href="https://apps.apple.com/us/app/snack-isle/id6791022824">Get Snack Isle on the App Store</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-grid">
+    <a class="footer-brand" href="#top">
+      <img src="assets/logo/snack-isle-logo.png" alt="">
+      Snack Isle
+    </a>
+    <div class="footer-links">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Use</a>
+      <a href="support.html">Support</a>
+    </div>
+  </div>
+  <p class="copyright">© 2026 Snack Isle. All snack opinions are the user's own.</p>
+</footer>
+
+</body>
+</html>
