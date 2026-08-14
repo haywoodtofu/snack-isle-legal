@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Snack Isle — find and rank the snacks you actually love</title>
+<title>Snack Isle: find and rank the snacks you actually love</title>
 <meta name="description" content="Scan a snack's barcode, compare it against what you've already tried, and build a ranked list that means something. See where friends' scores land, browse community favorites, and track down snacks nearby.">
 
 <!-- Favicon / home-screen icons -->
@@ -14,19 +14,19 @@
 <!-- Social share previews (iMessage, TikTok bio link, X, etc.) -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Snack Isle">
-<meta property="og:title" content="Snack Isle — find and rank the snacks you actually love">
+<meta property="og:title" content="Snack Isle: find and rank the snacks you actually love">
 <meta property="og:description" content="Scan a barcode, compare it against what you've already tried, and build a ranked list that means something.">
 <meta property="og:image" content="https://haywoodtofu.github.io/snack-isle-legal/assets/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:url" content="https://haywoodtofu.github.io/snack-isle-legal/">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Snack Isle — find and rank the snacks you actually love">
+<meta name="twitter:title" content="Snack Isle: find and rank the snacks you actually love">
 <meta name="twitter:description" content="Scan a barcode, compare it against what you've already tried, and build a ranked list that means something.">
 <meta name="twitter:image" content="https://haywoodtofu.github.io/snack-isle-legal/assets/og-image.jpg">
 
-<!-- Same two families the app itself ships (app/_layout.tsx's useFonts call)
-     — Quicksand for display, Plus Jakarta Sans for body — so the landing
+<!-- Same two families the app itself ships (app/_layout.tsx's useFonts call):
+     Quicksand for display, Plus Jakarta Sans for body. This way the landing
      page reads as the same product, not a generic marketing template. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -83,7 +83,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    font-family: "Comfortaa", sans-serif;
+    font-family: "Quicksand", sans-serif;
     font-weight: 700;
     font-size: 19px;
     color: var(--primary);
@@ -138,7 +138,7 @@
   }
 
   h1 {
-    font-family: "Comfortaa", sans-serif;
+    font-family: "Quicksand", sans-serif;
     font-weight: 700;
     font-size: clamp(32px, 4.6vw, 50px);
     line-height: 1.08;
@@ -176,12 +176,14 @@
     color: var(--muted);
   }
 
+  /* No added radius/shadow/border here (2026-08-13 screenshot refresh):
+     unlike the old raw device-less screenshots this replaced, the v4
+     "Gradient" screenshot set already bakes in its own background, phone
+     mockup, and shadow, so stacking another card frame on top just
+     doubled up and looked wrong. */
   .hero-shot {
-    border-radius: 28px;
-    overflow: hidden;
-    box-shadow: var(--card-shadow);
-    border: 1px solid var(--card-border);
-    transform: rotate(-2deg);
+    max-width: 340px;
+    margin: 0 auto;
   }
 
   /* ---- Sections ---- */
@@ -196,7 +198,7 @@
   .section-head .eyebrow { margin-bottom: 12px; }
 
   h2 {
-    font-family: "Comfortaa", sans-serif;
+    font-family: "Quicksand", sans-serif;
     font-weight: 700;
     font-size: clamp(24px, 3vw, 32px);
     color: var(--primary-deep);
@@ -225,7 +227,7 @@
   }
 
   .step-num {
-    font-family: "Comfortaa", sans-serif;
+    font-family: "Quicksand", sans-serif;
     font-weight: 700;
     font-size: 13px;
     color: var(--gold);
@@ -263,10 +265,11 @@
     .showcase.reverse .showcase-copy { order: 0; }
   }
 
+  /* Same reasoning as .hero-shot above: these screenshots already carry
+     their own background/phone-mockup/shadow, so no added card chrome. */
   .showcase img {
-    border-radius: 22px;
-    box-shadow: var(--card-shadow);
-    border: 1px solid var(--card-border);
+    max-width: 320px;
+    margin: 0 auto;
   }
 
   .showcase-copy h2 { margin-bottom: 14px; }
@@ -303,7 +306,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    font-family: "Comfortaa", sans-serif;
+    font-family: "Quicksand", sans-serif;
     font-weight: 700;
     font-size: 15px;
     color: var(--primary-deep);
@@ -331,16 +334,16 @@
       <h1>Find and rank the snacks you actually love.</h1>
       <p class="lede">
         Scan a barcode, see how your friends rated it, and build a ranked
-        list that means something — because you can't just give everything
+        list that means something, because you can't just give everything
         a 10/10.
       </p>
       <div class="cta-row">
         <a class="btn-primary" href="https://apps.apple.com/us/app/snack-isle/id6791022824">
-          Get Snack Isle — free
+          Get Snack Isle, free
         </a>
       </div>
     </div>
-    <img class="hero-shot" src="assets/screenshots/screenshot-1.jpg" alt="Snack Isle app screenshot — rating and discovering snacks">
+    <img class="hero-shot" src="assets/screenshots/screenshot-1.jpg" alt="Snack Isle app screenshot: a snack's score page showing your rating, the community score, and your friends' average">
   </div>
 </header>
 
@@ -362,7 +365,7 @@
         <div class="step-num">AFTER YOU TRY IT</div>
         <h3>Rank it</h3>
         <p>Compare it against snacks you've already rated to build a ranked
-          list over time — no rushed 10/10s, just an honest pecking order.</p>
+          list over time, with no rushed 10/10s, just an honest pecking order.</p>
       </div>
       <div class="step-card">
         <div class="step-num">ANY TIME</div>
@@ -376,13 +379,13 @@
 
 <section>
   <div class="wrap showcase">
-    <img src="assets/screenshots/screenshot-2.jpg" alt="Snack Isle app screenshot — friends feed">
+    <img src="assets/screenshots/screenshot-2.jpg" alt="Snack Isle app screenshot: a head-to-head duel asking which of two snacks you like more">
     <div class="showcase-copy">
       <span class="eyebrow">Ratings that mean something</span>
       <h2>You don't just slap a 10/10 on everything.</h2>
       <p>
         Every new snack gets compared head-to-head against ones you've
-        already tried — you pick a favorite, so your ratings actually
+        already tried, and you pick a favorite, so your ratings actually
         reflect how you really feel, not just a gut reaction in the aisle.
       </p>
       <p>
@@ -396,14 +399,14 @@
 
 <section>
   <div class="wrap showcase reverse">
-    <img src="assets/screenshots/screenshot-3.jpg" alt="Snack Isle app screenshot — scanning a barcode">
+    <img src="assets/screenshots/screenshot-3.jpg" alt="Snack Isle app screenshot: the feed showing friends' snack ratings and notes">
     <div class="showcase-copy">
       <span class="eyebrow">Beyond your own list</span>
       <h2>See what's worth trying next.</h2>
       <p>
         Browse the snacks the whole community already loves, check where a
         specific snack has been spotted nearby, and unlock small
-        achievements as you go — snacking turns into a bit of a game
+        achievements as you go, and snacking turns into a bit of a game
         without ever feeling like homework.
       </p>
     </div>

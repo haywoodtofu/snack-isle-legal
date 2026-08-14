@@ -39,24 +39,24 @@
   // Shared-link landing page: shared snack/profile/etc. links point HERE
   // (a normal webpage, not the app's own snack-isle:// scheme directly) so
   // that someone WITHOUT the app installed lands somewhere useful instead
-  // of a dead "cannot open page" error — a plain custom URL scheme has no
-  // OS-level fallback behavior of its own.
+  // of a dead "cannot open page" error, since a plain custom URL scheme
+  // has no OS-level fallback behavior of its own.
   //
   // ?to=<path> carries where inside the app to land (e.g. "snack/abc123");
   // defaults to the app's root if missing/malformed. Attempts the deep
   // link immediately, then falls back to the App Store after a short delay
-  // ONLY if the tab is still visible/foregrounded — if the OS actually
+  // ONLY if the tab is still visible/foregrounded: if the OS actually
   // switched to the app (the deep link worked), the page is backgrounded
   // and this fallback never fires. Not a true Universal Link (that needs a
-  // verified owned domain this project doesn't have yet — see docs/
-  // ROADMAP.md's Infrastructure section) — this is the "just JavaScript"
+  // verified owned domain this project doesn't have yet; see docs/
+  // ROADMAP.md's Infrastructure section), so this is the "just JavaScript"
   // middle ground: a visible redirect hop, but no domain ownership needed,
   // hosted on the same GitHub Pages site as the rest of the legal pages.
   (function () {
     var params = new URLSearchParams(window.location.search);
     var to = params.get("to") || "";
     // Guards against an arbitrary/malicious `to` value being reflected
-    // straight into a custom-scheme URL — only allow the characters an
+    // straight into a custom-scheme URL: only allow the characters an
     // actual expo-router path segment would ever contain.
     var safeTo = /^[A-Za-z0-9/_-]*$/.test(to) ? to : "";
     var appLink = "snack-isle://" + safeTo;
