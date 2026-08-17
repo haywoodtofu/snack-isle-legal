@@ -47,11 +47,13 @@
   // link immediately, then falls back to the App Store after a short delay
   // ONLY if the tab is still visible/foregrounded: if the OS actually
   // switched to the app (the deep link worked), the page is backgrounded
-  // and this fallback never fires. Not a true Universal Link (that needs a
-  // verified owned domain this project doesn't have yet; see docs/
-  // ROADMAP.md's Infrastructure section), so this is the "just JavaScript"
-  // middle ground: a visible redirect hop, but no domain ownership needed,
-  // hosted on the same GitHub Pages site as the rest of the legal pages.
+  // and this fallback never fires. Not a true Universal Link — that needs
+  // an apple-app-site-association file hosted at the domain root plus an
+  // associatedDomains entitlement in the app, neither set up yet even
+  // though a domain (snackisleapp.com, see docs/EXTERNAL_DEPENDENCIES.md's
+  // "Hosting / domain" section) now exists to host one on — so this stays
+  // the "just JavaScript" middle ground: a visible redirect hop, hosted on
+  // the same GitHub Pages site as the rest of the legal pages.
   (function () {
     var params = new URLSearchParams(window.location.search);
     var to = params.get("to") || "";
