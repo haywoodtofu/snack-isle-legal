@@ -192,15 +192,12 @@
 
   .btn-apple svg { width: 19px; height: 19px; flex-shrink: 0; }
 
-  /* Deliberately NOT styled like .btn-apple/.btn-primary — this is a
-     "notify me later" action, not "get the app now", so an outline style
-     reads as correctly secondary next to the solid App Store button. */
   .btn-outline {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: transparent;
-    color: var(--primary);
+    background: var(--primary);
+    color: #fff;
     padding: 13px 26px;
     border-radius: 10px;
     border: 1.5px solid var(--primary);
