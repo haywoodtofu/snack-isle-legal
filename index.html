@@ -216,7 +216,13 @@
      max-width too — a flex container with no explicit width otherwise
      fills its parent's full width, which would stretch BOTH buttons out
      to the whole section instead of to each other. */
-  .cta-stack { display: flex; flex-direction: column; align-items: stretch; gap: 12px; max-width: 340px; margin: 0 auto; }
+  .cta-stack { display: flex; flex-direction: column; align-items: stretch; gap: 12px; max-width: 340px; }
+
+  /* Only the bottom CTA (a centered section) needs auto margins to center
+     the stack itself — the hero's copy is left-aligned, so its cta-stack
+     stays put at the left edge of the column like the heading/paragraph
+     above it. */
+  .cta-stack.centered { margin: 0 auto; }
 
   .waitlist-form {
     display: none;
@@ -428,10 +434,23 @@
         list that means something, because you can't just give everything
         a 10/10.
       </p>
-      <div class="cta-row">
-        <a class="btn-primary" href="https://apps.apple.com/us/app/snack-isle/id6791022824">
+      <div class="cta-stack">
+        <a class="btn-apple" href="https://apps.apple.com/us/app/snack-isle/id6791022824">
+          <svg viewBox="0 0 170 170" aria-hidden="true" fill="currentColor"><path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.2-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.93.21-9.84-1.96-14.75-6.52-3.13-2.73-7.04-7.41-11.73-14.04-5.03-7.08-9.17-15.29-12.41-24.65-3.47-10.11-5.21-19.9-5.21-29.38 0-10.86 2.35-20.22 7.05-28.07 3.69-6.3 8.6-11.28 14.75-14.92 6.16-3.65 12.8-5.51 19.95-5.63 3.91 0 9.05 1.21 15.43 3.59 6.36 2.39 10.45 3.6 12.24 3.6 1.34 0 5.87-1.42 13.57-4.24 7.28-2.62 13.42-3.7 18.45-3.27 13.63 1.1 23.87 6.47 30.68 16.15-12.19 7.39-18.22 17.73-18.1 31 .11 10.34 3.86 18.94 11.23 25.77 3.34 3.17 7.07 5.62 11.22 7.36-.9 2.61-1.85 5.11-2.86 7.51zM119.11 7.24c0 8.1-2.96 15.67-8.86 22.67-7.12 8.32-15.73 13.13-25.07 12.38a25.22 25.22 0 0 1-.19-3.07c0-7.78 3.39-16.1 9.4-22.91 3-3.44 6.82-6.31 11.45-8.6 4.62-2.25 8.99-3.5 13.1-3.71.12 1.08.17 2.17.17 3.24z"/></svg>
           Get Snack Isle, free
         </a>
+
+        <button class="btn-outline waitlist-toggle" type="button" onclick="openWaitlist(this)">
+          Sign up for Android waitlist
+        </button>
+
+        <form class="waitlist-form" onsubmit="return submitWaitlist(event)">
+          <div class="waitlist-row">
+            <input class="waitlist-input" type="email" placeholder="you@example.com" required autocomplete="email">
+            <button class="waitlist-submit" type="submit">Notify me</button>
+          </div>
+          <div class="waitlist-status"></div>
+        </form>
       </div>
     </div>
     <img class="hero-shot" src="assets/screenshots/screenshot-1.jpg" alt="Snack Isle app screenshot: a snack's score page showing your rating, the community score, and your friends' average">
@@ -508,22 +527,22 @@
   <div class="wrap" style="text-align:center; padding: 24px 24px 8px;">
     <h2 style="margin-bottom: 14px;">Ready to start ranking?</h2>
     <p style="color: var(--muted); font-size: 16px; margin: 0 0 26px;">Free to download. iPhone only, for now.</p>
-    <div class="cta-stack">
+    <div class="cta-stack centered">
       <a class="btn-apple" href="https://apps.apple.com/us/app/snack-isle/id6791022824">
         <svg viewBox="0 0 170 170" aria-hidden="true" fill="currentColor"><path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.2-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.93.21-9.84-1.96-14.75-6.52-3.13-2.73-7.04-7.41-11.73-14.04-5.03-7.08-9.17-15.29-12.41-24.65-3.47-10.11-5.21-19.9-5.21-29.38 0-10.86 2.35-20.22 7.05-28.07 3.69-6.3 8.6-11.28 14.75-14.92 6.16-3.65 12.8-5.51 19.95-5.63 3.91 0 9.05 1.21 15.43 3.59 6.36 2.39 10.45 3.6 12.24 3.6 1.34 0 5.87-1.42 13.57-4.24 7.28-2.62 13.42-3.7 18.45-3.27 13.63 1.1 23.87 6.47 30.68 16.15-12.19 7.39-18.22 17.73-18.1 31 .11 10.34 3.86 18.94 11.23 25.77 3.34 3.17 7.07 5.62 11.22 7.36-.9 2.61-1.85 5.11-2.86 7.51zM119.11 7.24c0 8.1-2.96 15.67-8.86 22.67-7.12 8.32-15.73 13.13-25.07 12.38a25.22 25.22 0 0 1-.19-3.07c0-7.78 3.39-16.1 9.4-22.91 3-3.44 6.82-6.31 11.45-8.6 4.62-2.25 8.99-3.5 13.1-3.71.12 1.08.17 2.17.17 3.24z"/></svg>
         Get Snack Isle on the App Store
       </a>
 
-      <button class="btn-outline" type="button" id="waitlistToggle" onclick="document.getElementById('waitlistForm').classList.add('open'); this.style.display='none';">
+      <button class="btn-outline waitlist-toggle" type="button" onclick="openWaitlist(this)">
         Sign up for Android waitlist
       </button>
 
-      <form class="waitlist-form" id="waitlistForm" onsubmit="return submitWaitlist(event)">
+      <form class="waitlist-form" onsubmit="return submitWaitlist(event)">
         <div class="waitlist-row">
-          <input class="waitlist-input" id="waitlistEmail" type="email" placeholder="you@example.com" required autocomplete="email">
-          <button class="waitlist-submit" type="submit" id="waitlistSubmit">Notify me</button>
+          <input class="waitlist-input" type="email" placeholder="you@example.com" required autocomplete="email">
+          <button class="waitlist-submit" type="submit">Notify me</button>
         </div>
-        <div class="waitlist-status" id="waitlistStatus"></div>
+        <div class="waitlist-status"></div>
       </form>
     </div>
   </div>
@@ -539,11 +558,24 @@
   var SUPABASE_URL = "https://sqkuvryccqpncligbvaq.supabase.co";
   var SUPABASE_ANON_KEY = "sb_publishable_x5JlgZwEykHKdha5VpfbUQ_vP0wLBoM";
 
+  // Was ID-based (one hardcoded #waitlistForm/#waitlistEmail/etc), which
+  // only ever supported a single instance on the page — now the hero has
+  // its own copy of this same stack too, so this is rewritten to work off
+  // the specific form/button that was actually interacted with (via
+  // e.target / the button's own DOM position) instead of a fixed ID,
+  // supporting any number of instances on the page.
+  function openWaitlist(btn) {
+    btn.style.display = "none";
+    btn.nextElementSibling.classList.add("open");
+  }
+
   function submitWaitlist(e) {
     e.preventDefault();
-    var email = document.getElementById("waitlistEmail").value.trim();
-    var statusEl = document.getElementById("waitlistStatus");
-    var submitBtn = document.getElementById("waitlistSubmit");
+    var form = e.target;
+    var input = form.querySelector(".waitlist-input");
+    var submitBtn = form.querySelector(".waitlist-submit");
+    var statusEl = form.querySelector(".waitlist-status");
+    var email = input.value.trim();
     submitBtn.disabled = true;
     statusEl.textContent = "Joining…";
     statusEl.className = "waitlist-status";
@@ -562,7 +594,7 @@
       if (res.ok) {
         statusEl.textContent = "You're on the list — we'll email you when Android is ready.";
         statusEl.className = "waitlist-status success";
-        document.getElementById("waitlistEmail").value = "";
+        input.value = "";
       } else if (res.status === 409) {
         statusEl.textContent = "That email's already on the list.";
         statusEl.className = "waitlist-status success";
