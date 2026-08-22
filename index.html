@@ -1,446 +1,107 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Snack Isle: find and rank the snacks you actually love</title>
-<meta name="description" content="Scan a snack's barcode, compare it against what you've already tried, and build a ranked list that means something. See where friends' scores land, browse community favorites, and track down snacks nearby.">
-
-<!-- Favicon / home-screen icons -->
-<link rel="icon" type="image/png" sizes="32x32" href="assets/logo/favicon-32.png">
-<link rel="icon" type="image/png" sizes="192x192" href="assets/logo/favicon-192.png">
-<link rel="apple-touch-icon" sizes="180x180" href="assets/logo/apple-touch-icon.png">
-
-<!-- Social share previews (iMessage, TikTok bio link, X, etc.) -->
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Snack Isle">
-<meta property="og:title" content="Snack Isle: find and rank the snacks you actually love">
-<meta property="og:description" content="Scan a barcode, compare it against what you've already tried, and build a ranked list that means something.">
-<meta property="og:image" content="https://snackisleapp.com/assets/og-image.jpg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:url" content="https://snackisleapp.com/">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Snack Isle: find and rank the snacks you actually love">
-<meta name="twitter:description" content="Scan a barcode, compare it against what you've already tried, and build a ranked list that means something.">
-<meta name="twitter:image" content="https://snackisleapp.com/assets/og-image.jpg">
-
-<!-- Same two families the app itself ships (app/_layout.tsx's useFonts call):
-     Quicksand for display, Plus Jakarta Sans for body. This way the landing
-     page reads as the same product, not a generic marketing template. -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-<style>
-  :root {
-    --bg: #fdf6e8;
-    --bg-deep: #f6ecd6;
-    --ink: #241c12;
-    --muted: #6b5f4d;
-    --primary: #5C3D8A;
-    --primary-deep: #452c6b;
-    --gold: #d9a94a;
-    --card-border: rgba(92, 61, 138, 0.14);
-    --card-shadow: 0 18px 40px rgba(36, 28, 18, 0.10);
-  }
-
-  * { box-sizing: border-box; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--ink);
-    font-family: "Plus Jakarta Sans", -apple-system, "Segoe UI", Roboto, sans-serif;
-    line-height: 1.55;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  img { max-width: 100%; display: block; }
-
-  .wrap {
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 0 24px;
-  }
-
-  a { color: inherit; }
-
-  /* ---- Nav ---- */
-
-  nav.topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 22px 24px;
-    max-width: 1080px;
-    margin: 0 auto;
-  }
-
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-family: "Quicksand", sans-serif;
-    font-weight: 700;
-    font-size: 19px;
-    color: var(--primary);
-    text-decoration: none;
-  }
-
-  .brand img { width: 34px; height: 34px; }
-
-  .nav-cta {
-    display: inline-block;
-    padding: 9px 18px;
-    background: var(--primary);
-    color: #fff;
-    border-radius: 100px;
-    font-size: 14px;
-    font-weight: 600;
-    text-decoration: none;
-    white-space: nowrap;
-  }
-
-  /* ---- Hero ---- */
-
-  header.hero {
-    padding: 40px 0 64px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero-grid {
-    display: grid;
-    grid-template-columns: 1.05fr 0.95fr;
-    gap: 48px;
-    align-items: center;
-  }
-
-  @media (max-width: 860px) {
-    .hero-grid { grid-template-columns: 1fr; }
-    .hero-shot { order: -1; max-width: 320px; margin: 0 auto; }
-  }
-
-  .eyebrow {
-    display: inline-block;
-    font-size: 12.5px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--primary);
-    background: rgba(92, 61, 138, 0.09);
-    padding: 6px 12px;
-    border-radius: 100px;
-    margin-bottom: 18px;
-  }
-
-  h1 {
-    font-family: "Quicksand", sans-serif;
-    font-weight: 700;
-    font-size: clamp(32px, 4.6vw, 50px);
-    line-height: 1.08;
-    letter-spacing: -0.01em;
-    margin: 0 0 18px;
-    color: var(--primary-deep);
-    text-wrap: balance;
-  }
-
-  .hero p.lede {
-    font-size: 18px;
-    color: var(--muted);
-    max-width: 46ch;
-    margin: 0 0 30px;
-  }
-
-  .cta-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
-
-  .btn-primary {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--primary);
-    color: #fff;
-    padding: 15px 26px;
-    border-radius: 14px;
-    font-weight: 700;
-    font-size: 16px;
-    text-decoration: none;
-    box-shadow: 0 10px 24px rgba(92, 61, 138, 0.28);
-  }
-
-  /* Matches Apple's own Sign In with Apple button convention (black fill,
-     white text, the Apple mark, an ~10px corner radius rather than a full
-     pill) instead of the site's own purple brand button — this one's a
-     direct App Store link, so borrowing Apple's own visual language reads
-     as more official/recognizable than another purple CTA would. */
-  .btn-apple {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 9px;
-    background: #000;
-    color: #fff;
-    padding: 14px 26px;
-    border-radius: 10px;
-    font-weight: 600;
-    font-size: 16px;
-    text-decoration: none;
-  }
-
-  .btn-apple svg { width: 19px; height: 19px; flex-shrink: 0; }
-
-  .btn-outline {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--primary);
-    color: #fff;
-    padding: 13px 26px;
-    border-radius: 10px;
-    border: 1.5px solid var(--primary);
-    font-weight: 600;
-    font-size: 16px;
-    text-decoration: none;
-    cursor: pointer;
-  }
-
-  /* align-items: stretch (not center) so both buttons match the width of
-     whichever is naturally widest (the App Store button, with its icon +
-     longer label) instead of each hugging its own text. Needs its own
-     max-width too — a flex container with no explicit width otherwise
-     fills its parent's full width, which would stretch BOTH buttons out
-     to the whole section instead of to each other. */
-  .cta-stack { display: flex; flex-direction: column; align-items: stretch; gap: 12px; max-width: 340px; }
-
-  /* Only the bottom CTA (a centered section) needs auto margins to center
-     the stack itself — the hero's copy is left-aligned, so its cta-stack
-     stays put at the left edge of the column like the heading/paragraph
-     above it. */
-  .cta-stack.centered { margin: 0 auto; }
-
-  .waitlist-form {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    margin-top: 4px;
-    width: 100%;
-    max-width: 360px;
-  }
-
-  .waitlist-form.open { display: flex; }
-
-  .waitlist-row { display: flex; gap: 8px; width: 100%; }
-
-  .waitlist-input {
-    flex: 1;
-    padding: 13px 16px;
-    border-radius: 10px;
-    border: 1.5px solid var(--card-border);
-    font-family: "Plus Jakarta Sans", sans-serif;
-    font-size: 15px;
-    color: var(--ink);
-    background: #fff;
-  }
-
-  .waitlist-input:focus { outline: 2px solid var(--primary); outline-offset: 1px; }
-
-  .waitlist-submit {
-    background: var(--primary);
-    color: #fff;
-    border: none;
-    padding: 0 20px;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 15px;
-    cursor: pointer;
-  }
-
-  .waitlist-submit:disabled { opacity: 0.6; cursor: default; }
-
-  .waitlist-status { font-size: 13.5px; color: var(--muted); min-height: 18px; }
-  .waitlist-status.error { color: var(--danger, #C93A2E); }
-  .waitlist-status.success { color: var(--success, #2E9E5B); }
-
-  .rating-note {
-    font-size: 13.5px;
-    color: var(--muted);
-  }
-
-  /* No added radius/shadow/border here (2026-08-13 screenshot refresh):
-     unlike the old raw device-less screenshots this replaced, the v4
-     "Gradient" screenshot set already bakes in its own background, phone
-     mockup, and shadow, so stacking another card frame on top just
-     doubled up and looked wrong. */
-  .hero-shot {
-    max-width: 340px;
-    margin: 0 auto;
-  }
-
-  /* ---- Sections ---- */
-
-  section { padding: 56px 0; }
-
-  .section-head {
-    max-width: 56ch;
-    margin: 0 0 36px;
-  }
-
-  .section-head .eyebrow { margin-bottom: 12px; }
-
-  h2 {
-    font-family: "Quicksand", sans-serif;
-    font-weight: 700;
-    font-size: clamp(24px, 3vw, 32px);
-    color: var(--primary-deep);
-    margin: 0 0 10px;
-    text-wrap: balance;
-  }
-
-  .section-head p { color: var(--muted); font-size: 16px; margin: 0; }
-
-  .steps {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-  }
-
-  @media (max-width: 780px) {
-    .steps { grid-template-columns: 1fr; }
-  }
-
-  .step-card {
-    background: #fff;
-    border: 1px solid var(--card-border);
-    border-radius: 20px;
-    padding: 26px 22px;
-    box-shadow: 0 4px 16px rgba(36, 28, 18, 0.05);
-  }
-
-  .step-num {
-    font-family: "Quicksand", sans-serif;
-    font-weight: 700;
-    font-size: 13px;
-    color: var(--gold);
-    letter-spacing: 0.06em;
-    margin-bottom: 10px;
-  }
-
-  .step-card h3 {
-    font-family: "Plus Jakarta Sans", sans-serif;
-    font-weight: 700;
-    font-size: 17px;
-    margin: 0 0 8px;
-    color: var(--ink);
-  }
-
-  .step-card p {
-    margin: 0;
-    font-size: 14.5px;
-    color: var(--muted);
-  }
-
-  /* ---- Showcase (screenshots + copy) ---- */
-
-  .showcase {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    align-items: center;
-  }
-
-  .showcase.reverse .showcase-copy { order: 2; }
-
-  @media (max-width: 860px) {
-    .showcase, .showcase.reverse { grid-template-columns: 1fr; }
-    .showcase.reverse .showcase-copy { order: 0; }
-  }
-
-  /* Same reasoning as .hero-shot above: these screenshots already carry
-     their own background/phone-mockup/shadow, so no added card chrome. */
-  .showcase img {
-    max-width: 320px;
-    margin: 0 auto;
-  }
-
-  .showcase-copy h2 { margin-bottom: 14px; }
-  .showcase-copy p { color: var(--muted); font-size: 16px; margin: 0 0 12px; }
-
-  /* ---- Footer ---- */
-
-  footer {
-    padding: 48px 0 40px;
-    border-top: 1px solid var(--card-border);
-    margin-top: 40px;
-  }
-
-  .footer-grid {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 18px;
-  }
-
-  .footer-links {
-    display: flex;
-    gap: 22px;
-    flex-wrap: wrap;
-    font-size: 14px;
-    color: var(--muted);
-  }
-
-  .footer-links a { text-decoration: none; }
-  .footer-links a:hover { color: var(--primary); }
-
-  .footer-brand {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: "Quicksand", sans-serif;
-    font-weight: 700;
-    font-size: 15px;
-    color: var(--primary-deep);
-  }
-
-  .footer-brand img { width: 22px; height: 22px; }
-
-  .copyright { font-size: 12.5px; color: var(--muted); margin-top: 18px; }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Snack Isle | Find your next favorite snack</title>
+  <meta name="description" content="Scan, rank, and discover snacks with friends on Snack Isle.">
+  <link rel="canonical" href="https://snackisleapp.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Snack Isle">
+  <meta property="og:title" content="Snack Isle | Find your next favorite snack">
+  <meta property="og:description" content="Scan, rank, and discover snacks with friends on Snack Isle.">
+  <meta property="og:image" content="https://snackisleapp.com/assets/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" content="https://snackisleapp.com/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Snack Isle | Find your next favorite snack">
+  <meta name="twitter:description" content="Scan, rank, and discover snacks with friends on Snack Isle.">
+  <meta name="twitter:image" content="https://snackisleapp.com/assets/og-image.jpg">
+  <link rel="icon" href="assets/logo/favicon-32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--cream:#fff9ef;--paper:#fffdf9;--purple:#59318e;--deep:#35204f;--ink:#241b2f;--muted:#746b7b;--lilac:#eee4f5;--peach:#ffe7c8;--line:rgba(67,40,91,.11);--shadow:0 24px 70px rgba(66,38,89,.14)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);font-family:"Plus Jakarta Sans",sans-serif;background:radial-gradient(circle at 8% 5%,#efe2f8 0,transparent 28rem),radial-gradient(circle at 92% 12%,#ffe5c8 0,transparent 30rem),var(--cream);-webkit-font-smoothing:antialiased}a{color:inherit}.wrap{width:min(1120px,calc(100% - 40px));margin:auto}
+    nav{height:78px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:5}.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--purple);font:700 21px "Quicksand",sans-serif}.brand img{width:34px;height:34px}.navlinks{display:flex;align-items:center;gap:28px;font-size:14px;font-weight:600}.navlinks a{text-decoration:none}.navlinks .download{padding:11px 18px;color:white;background:var(--purple);border-radius:999px;box-shadow:0 8px 20px rgba(89,49,142,.22)}
+    .hero{min-height:680px;display:grid;grid-template-columns:1.02fr .98fr;align-items:center;gap:72px;padding:44px 0 84px}.kicker{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border:1px solid rgba(89,49,142,.13);border-radius:999px;background:rgba(255,255,255,.58);color:var(--purple);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}.kicker:before{content:"";width:7px;height:7px;border-radius:50%;background:#f7ad32;box-shadow:0 0 0 4px rgba(247,173,50,.16)}h1,h2,h3{font-family:"Quicksand",sans-serif}h1{margin:20px 0 18px;color:var(--deep);font-size:clamp(48px,5.4vw,72px);line-height:.98;letter-spacing:-.045em;text-wrap:balance}.accent{color:var(--purple)}.lede{max-width:550px;margin:0 0 30px;color:var(--muted);font-size:18px;line-height:1.65}.actions{display:flex;gap:12px;flex-wrap:wrap}.store-stack{display:flex;flex-direction:column;align-items:stretch;gap:12px;width:min(100%,340px)}.store-button{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:52px;padding:0 26px;border:0;border-radius:10px;color:#fff;text-decoration:none;font-size:16px;font-weight:600;font-family:inherit;cursor:pointer}.store-button svg{width:19px;height:19px;flex:none}.store-button.apple{background:#000}.store-button.android{background:var(--purple);border:1.5px solid var(--purple)}
+    .waitlist-form{display:none;flex-direction:column;align-items:center;gap:10px;width:100%}.waitlist-form.open{display:flex}.waitlist-row{display:flex;gap:8px;width:100%}.waitlist-input{flex:1;min-height:48px;padding:0 16px;border-radius:10px;border:1.5px solid var(--line);font-family:inherit;font-size:15px;color:var(--ink);background:#fff}.waitlist-input:focus{outline:2px solid var(--purple);outline-offset:1px}.waitlist-submit{background:var(--purple);color:#fff;border:none;padding:0 20px;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer}.waitlist-submit:disabled{opacity:.6;cursor:default}.waitlist-status{font-size:13px;color:var(--muted);min-height:18px;text-align:center}.waitlist-status.error{color:#c93a2e}.waitlist-status.success{color:#2e9e5b}.cta .waitlist-status{color:rgba(255,255,255,.76)}.cta .waitlist-status.error{color:#ffb4a8}.cta .waitlist-status.success{color:#8fe3ae}
+    .visual{position:relative;min-height:580px}.glow{position:absolute;inset:7% 1% 2%;border-radius:48% 52% 43% 57%;background:linear-gradient(145deg,#d9c5ef,#ffdba8);filter:saturate(.8);transform:rotate(-3deg)}.phone{position:absolute;z-index:2;width:290px;left:50%;top:0;transform:translateX(-50%) rotate(2deg);border-radius:42px;box-shadow:var(--shadow);border:8px solid #1c1720}.float{position:absolute;z-index:3;padding:14px 16px;border:1px solid rgba(255,255,255,.7);border-radius:19px;background:rgba(255,255,255,.82);backdrop-filter:blur(14px);box-shadow:0 16px 40px rgba(55,34,72,.14)}.float strong{display:block;color:var(--deep);font:700 15px "Quicksand"}.float span{font-size:12px;color:var(--muted)}.score{left:0;top:110px}.score b{display:block;color:#3e9a6e;font-size:27px;margin-top:4px}.friends{right:0;top:330px}.friends .avatars{display:flex;margin-top:9px}.friends i{width:29px;height:29px;margin-left:-5px;border:2px solid white;border-radius:50%;background:linear-gradient(135deg,#b992d5,#f2ad72)}.friends i:first-child{margin-left:0}.rank{left:8%;bottom:12px}.rank em{color:#f0a61e;font-style:normal}
+    section{padding:92px 0}.section-head{text-align:center;max-width:690px;margin:0 auto 42px}.eyebrow{color:var(--purple);font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase}.section-head h2,.feature-copy h2,.cta h2{font-size:clamp(32px,4vw,48px);line-height:1.08;letter-spacing:-.03em;color:var(--deep);margin:12px 0}.section-head p,.feature-copy p,.cta p{color:var(--muted);line-height:1.7}
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.step{padding:28px;border:1px solid var(--line);border-radius:24px;background:rgba(255,255,255,.58);box-shadow:0 12px 30px rgba(55,34,72,.06)}.icon{width:44px;height:44px;display:grid;place-items:center;border-radius:14px;background:var(--lilac);color:var(--purple);font-size:20px}.step h3{font-size:22px;margin:18px 0 8px}.step p{margin:0;color:var(--muted);font-size:14px;line-height:1.65}
+    .feature{display:grid;grid-template-columns:.9fr 1.1fr;align-items:center;gap:90px}.feature.reverse{grid-template-columns:1.1fr .9fr}.feature.reverse .feature-art{order:2}.feature-art{position:relative;display:grid;place-items:center;min-height:560px;border-radius:38px;background:linear-gradient(145deg,#eee4f6,#ffead0);overflow:hidden}.feature-art img{width:285px;border-radius:35px;border:7px solid #1b1720;box-shadow:var(--shadow);transform:rotate(-2deg)}.feature.reverse img{transform:rotate(2deg)}.feature-copy{max-width:480px}.feature-copy h2{font-size:43px}.checklist{display:grid;gap:13px;margin-top:24px}.check{display:flex;align-items:center;gap:12px;font-size:14px;font-weight:600}.check:before{content:"✓";display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:var(--lilac);color:var(--purple)}
+    .cta{margin:70px auto 84px;padding:62px 30px;text-align:center;border-radius:36px;background:linear-gradient(135deg,var(--deep),var(--purple));color:#fff;box-shadow:0 25px 70px rgba(55,32,79,.25)}.cta h2{color:#fff;margin-top:0}.cta p{color:rgba(255,255,255,.76);margin:0 0 25px}.cta .store-stack{margin:0 auto}.cta .store-button.android{box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+    footer{padding:24px 0 42px;border-top:1px solid var(--line)}.footer-row{display:flex;justify-content:space-between;align-items:center}.footer-links{display:flex;gap:20px;font-size:13px;color:var(--muted)}.footer-links a{text-decoration:none}
+    @media(max-width:860px){.navlinks>a:not(.download){display:none}.hero,.feature,.feature.reverse{grid-template-columns:1fr;gap:44px}.hero{padding-top:28px;text-align:center}.hero .actions{justify-content:center}.visual{min-height:520px}.feature.reverse .feature-art{order:0}.feature-copy{max-width:none}.steps{grid-template-columns:1fr}.feature-art{min-height:500px}.float{transform:scale(.88)}.score{left:0}.friends{right:0}}
+    @media(max-width:540px){.wrap{width:min(100% - 28px,1120px)}nav{height:66px}.hero{padding-bottom:48px}h1{font-size:45px}.lede{font-size:16px}.visual{min-height:450px}.phone{width:235px}.float{max-width:135px;padding:11px}.score{top:80px}.friends{top:280px}.rank{bottom:0}.feature-art{min-height:430px}.feature-art img{width:235px}.feature-copy h2{font-size:35px}section{padding:65px 0}.footer-row{flex-direction:column;gap:20px}.actions .button{width:100%}}
+  </style>
 </head>
-<body>
+<body id="top">
+  <nav class="wrap">
+    <a class="brand" href="#top"><img src="assets/logo/snack-isle-logo.png" alt="">Snack Isle</a>
+    <div class="navlinks"><a href="#how">How it works</a><a href="#features">Features</a><a class="download" href="https://apps.apple.com/us/app/snack-isle/id6791022824">Get the app</a></div>
+  </nav>
 
-<nav class="topbar">
-  <a class="brand" href="#top">
-    <img src="assets/logo/snack-isle-logo.png" alt="">
-    Snack Isle
-  </a>
-  <a class="nav-cta" href="https://apps.apple.com/us/app/snack-isle/id6791022824">Get the app</a>
-</nav>
+  <main>
+    <header class="hero wrap">
+      <div>
+        <span class="kicker">Now on the App Store</span>
+        <h1>Find your next <span class="accent">favorite snack.</span></h1>
+        <p class="lede">Scan what catches your eye, rank everything you try, and discover the snacks your friends actually recommend.</p>
+        <div class="store-stack">
+          <a class="store-button apple" href="https://apps.apple.com/us/app/snack-isle/id6791022824"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.79 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.1zM12.03 7.25C11.88 5.02 13.69 3.18 15.77 3c.29 2.58-2.34 4.5-3.74 4.25z"/></svg>Get Snack Isle, free</a>
+          <button class="store-button android waitlist-toggle" type="button" onclick="openWaitlist(this)">Sign up for Android waitlist</button>
+          <form class="waitlist-form" onsubmit="return submitWaitlist(event)">
+            <div class="waitlist-row">
+              <input class="waitlist-input" type="email" placeholder="you@example.com" required autocomplete="email">
+              <button class="waitlist-submit" type="submit">Notify me</button>
+            </div>
+            <div class="waitlist-status"></div>
+          </form>
+        </div>
+      </div>
+      <div class="visual" aria-label="Snack Isle app preview">
+        <div class="glow"></div>
+        <img class="phone" src="assets/screenshots/screenshot-1.jpg" alt="Snack Isle snack rating screen">
+        <div class="float score"><strong>Your score</strong><b>9.0</b><span>Top 8% of your list</span></div>
+        <div class="float friends"><strong>Friends agree</strong><span>Average score 8.8</span><div class="avatars"><i></i><i></i><i></i></div></div>
+        <div class="float rank"><strong><em>#12</em> overall</strong><span>Moving up your ranking</span></div>
+      </div>
+    </header>
 
-<header class="hero" id="top">
-  <div class="wrap hero-grid">
-    <div>
-      <span class="eyebrow">Now on the Apple App Store</span>
-      <h1>Find and rank the snacks you actually love.</h1>
-      <p class="lede">
-        Scan a barcode, see how your friends rated it, and build a ranked
-        list that means something, because you can't just give everything
-        a 10/10.
-      </p>
-      <div class="cta-stack">
-        <a class="btn-apple" href="https://apps.apple.com/us/app/snack-isle/id6791022824">
-          <svg viewBox="0 0 170 170" aria-hidden="true" fill="currentColor"><path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.2-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.93.21-9.84-1.96-14.75-6.52-3.13-2.73-7.04-7.41-11.73-14.04-5.03-7.08-9.17-15.29-12.41-24.65-3.47-10.11-5.21-19.9-5.21-29.38 0-10.86 2.35-20.22 7.05-28.07 3.69-6.3 8.6-11.28 14.75-14.92 6.16-3.65 12.8-5.51 19.95-5.63 3.91 0 9.05 1.21 15.43 3.59 6.36 2.39 10.45 3.6 12.24 3.6 1.34 0 5.87-1.42 13.57-4.24 7.28-2.62 13.42-3.7 18.45-3.27 13.63 1.1 23.87 6.47 30.68 16.15-12.19 7.39-18.22 17.73-18.1 31 .11 10.34 3.86 18.94 11.23 25.77 3.34 3.17 7.07 5.62 11.22 7.36-.9 2.61-1.85 5.11-2.86 7.51zM119.11 7.24c0 8.1-2.96 15.67-8.86 22.67-7.12 8.32-15.73 13.13-25.07 12.38a25.22 25.22 0 0 1-.19-3.07c0-7.78 3.39-16.1 9.4-22.91 3-3.44 6.82-6.31 11.45-8.6 4.62-2.25 8.99-3.5 13.1-3.71.12 1.08.17 2.17.17 3.24z"/></svg>
-          Get Snack Isle, free
-        </a>
+    <section id="how">
+      <div class="wrap">
+        <div class="section-head"><span class="eyebrow">How it works</span><h2>A better way to remember what you love.</h2><p>From the store shelf to your personal rankings in three quick steps.</p></div>
+        <div class="steps">
+          <article class="step"><div class="icon">⌁</div><h3>Scan it</h3><p>Point your camera at a barcode and pull up the snack instantly.</p></article>
+          <article class="step"><div class="icon">★</div><h3>Rank it</h3><p>Compare snacks head to head and build a list that reflects your real taste.</p></article>
+          <article class="step"><div class="icon">♧</div><h3>Share it</h3><p>See what friends and the wider Snack Isle community recommend next.</p></article>
+        </div>
+      </div>
+    </section>
 
-        <button class="btn-outline waitlist-toggle" type="button" onclick="openWaitlist(this)">
-          Sign up for Android waitlist
-        </button>
+    <section id="features">
+      <div class="wrap feature">
+        <div class="feature-art"><img src="assets/screenshots/screenshot-2.jpg" alt="Snack Isle head to head snack comparison"></div>
+        <div class="feature-copy"><span class="eyebrow">Rankings that mean something</span><h2>Your taste, sorted properly.</h2><p>Snack Isle uses quick head-to-head choices to turn every rating into a personal ranking. No more giving everything a ten and forgetting what was actually best.</p><div class="checklist"><div class="check">Fast snack comparisons</div><div class="check">A ranking that evolves with you</div><div class="check">Community scores for context</div></div></div>
+      </div>
+    </section>
 
+    <section>
+      <div class="wrap feature reverse">
+        <div class="feature-art"><img src="assets/screenshots/screenshot-3.jpg" alt="Snack Isle friends feed"></div>
+        <div class="feature-copy"><span class="eyebrow">Discover together</span><h2>Good snacks are better shared.</h2><p>Follow friends, browse what the community loves, and keep a running list of what deserves a spot in your cart.</p><div class="checklist"><div class="check">Friends' ratings in one feed</div><div class="check">Trending community favorites</div><div class="check">Collections by snack and brand</div></div></div>
+      </div>
+    </section>
+
+    <section id="android" class="wrap cta">
+      <h2>Ready to find something delicious?</h2>
+      <p>Snack Isle is free on iPhone. Android support is on the way.</p>
+      <div class="store-stack">
+        <a class="store-button apple" href="https://apps.apple.com/us/app/snack-isle/id6791022824"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.79 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.1zM12.03 7.25C11.88 5.02 13.69 3.18 15.77 3c.29 2.58-2.34 4.5-3.74 4.25z"/></svg>Get Snack Isle on the App Store</a>
+        <button class="store-button android waitlist-toggle" type="button" onclick="openWaitlist(this)">Sign up for Android waitlist</button>
         <form class="waitlist-form" onsubmit="return submitWaitlist(event)">
           <div class="waitlist-row">
             <input class="waitlist-input" type="email" placeholder="you@example.com" required autocomplete="email">
@@ -449,180 +110,70 @@
           <div class="waitlist-status"></div>
         </form>
       </div>
-    </div>
-    <img class="hero-shot" src="assets/screenshots/screenshot-1.jpg" alt="Snack Isle app screenshot: a snack's score page showing your rating, the community score, and your friends' average">
-  </div>
-</header>
+    </section>
+  </main>
 
-<section>
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow">How it works</span>
-      <h2>Snacking, turned into something worth tracking.</h2>
-      <p>Three steps, every time you try something new.</p>
-    </div>
-    <div class="steps">
-      <div class="step-card">
-        <div class="step-num">AT THE STORE</div>
-        <h3>Scan it</h3>
-        <p>Curious about a snack? Scan the barcode and see how your friends
-          rated it, along with everyone else who has.</p>
-      </div>
-      <div class="step-card">
-        <div class="step-num">AFTER YOU TRY IT</div>
-        <h3>Rank it</h3>
-        <p>Compare it against snacks you've already rated to build a ranked
-          list over time, with no rushed 10/10s, just an honest pecking order.</p>
-      </div>
-      <div class="step-card">
-        <div class="step-num">ANY TIME</div>
-        <h3>Discover more</h3>
-        <p>Browse what the community already loves, see where a snack was
-          spotted in stores, and earn small achievements along the way.</p>
-      </div>
-    </div>
-  </div>
-</section>
+  <footer><div class="wrap footer-row"><a class="brand" href="#top"><img src="assets/logo/snack-isle-logo.png" alt="">Snack Isle</a><div class="footer-links"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="support.html">Support</a></div></div></footer>
 
-<section>
-  <div class="wrap showcase">
-    <img src="assets/screenshots/screenshot-2.jpg" alt="Snack Isle app screenshot: a head-to-head duel asking which of two snacks you like more">
-    <div class="showcase-copy">
-      <span class="eyebrow">Ratings that mean something</span>
-      <h2>You don't just slap a 10/10 on everything.</h2>
-      <p>
-        Every new snack gets compared head-to-head against ones you've
-        already tried, and you pick a favorite, so your ratings actually
-        reflect how you really feel, not just a gut reaction in the aisle.
-      </p>
-      <p>
-        Friends' scores show up right alongside yours, so you can see who
-        actually agrees with your taste and who's completely wrong about
-        pickle-flavored chips.
-      </p>
-    </div>
-  </div>
-</section>
+  <script>
+    // Direct REST insert against Supabase's PostgREST API using the public
+    // anon key — same pattern the app itself uses client-side, safe to embed
+    // here because it's meant to be public and the android_waitlist table's
+    // RLS policy (migration 176) only allows anon INSERT, never SELECT/
+    // UPDATE/DELETE, so this key can't be used to read back or tamper with
+    // anyone else's signup even though it's sitting in this page's source.
+    var SUPABASE_URL = "https://sqkuvryccqpncligbvaq.supabase.co";
+    var SUPABASE_ANON_KEY = "sb_publishable_x5JlgZwEykHKdha5VpfbUQ_vP0wLBoM";
 
-<section>
-  <div class="wrap showcase reverse">
-    <img src="assets/screenshots/screenshot-3.jpg" alt="Snack Isle app screenshot: the feed showing friends' snack ratings and notes">
-    <div class="showcase-copy">
-      <span class="eyebrow">Beyond your own list</span>
-      <h2>See what's worth trying next.</h2>
-      <p>
-        Browse the snacks the whole community already loves, check where a
-        specific snack has been spotted nearby, and unlock small
-        achievements as you go, and snacking turns into a bit of a game
-        without ever feeling like homework.
-      </p>
-    </div>
-  </div>
-</section>
+    // Works off the specific form/button that was actually interacted with
+    // (via the button's own DOM position), not a fixed ID — supports both
+    // the hero and bottom-CTA copies of this same stack on one page.
+    function openWaitlist(btn) {
+      btn.style.display = "none";
+      btn.nextElementSibling.classList.add("open");
+    }
 
-<section>
-  <div class="wrap" style="text-align:center; padding: 24px 24px 8px;">
-    <h2 style="margin-bottom: 14px;">Ready to start ranking?</h2>
-    <p style="color: var(--muted); font-size: 16px; margin: 0 0 26px;">Free to download. iPhone only, for now.</p>
-    <div class="cta-stack centered">
-      <a class="btn-apple" href="https://apps.apple.com/us/app/snack-isle/id6791022824">
-        <svg viewBox="0 0 170 170" aria-hidden="true" fill="currentColor"><path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.2-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.93.21-9.84-1.96-14.75-6.52-3.13-2.73-7.04-7.41-11.73-14.04-5.03-7.08-9.17-15.29-12.41-24.65-3.47-10.11-5.21-19.9-5.21-29.38 0-10.86 2.35-20.22 7.05-28.07 3.69-6.3 8.6-11.28 14.75-14.92 6.16-3.65 12.8-5.51 19.95-5.63 3.91 0 9.05 1.21 15.43 3.59 6.36 2.39 10.45 3.6 12.24 3.6 1.34 0 5.87-1.42 13.57-4.24 7.28-2.62 13.42-3.7 18.45-3.27 13.63 1.1 23.87 6.47 30.68 16.15-12.19 7.39-18.22 17.73-18.1 31 .11 10.34 3.86 18.94 11.23 25.77 3.34 3.17 7.07 5.62 11.22 7.36-.9 2.61-1.85 5.11-2.86 7.51zM119.11 7.24c0 8.1-2.96 15.67-8.86 22.67-7.12 8.32-15.73 13.13-25.07 12.38a25.22 25.22 0 0 1-.19-3.07c0-7.78 3.39-16.1 9.4-22.91 3-3.44 6.82-6.31 11.45-8.6 4.62-2.25 8.99-3.5 13.1-3.71.12 1.08.17 2.17.17 3.24z"/></svg>
-        Get Snack Isle on the App Store
-      </a>
+    function submitWaitlist(e) {
+      e.preventDefault();
+      var form = e.target;
+      var input = form.querySelector(".waitlist-input");
+      var submitBtn = form.querySelector(".waitlist-submit");
+      var statusEl = form.querySelector(".waitlist-status");
+      var email = input.value.trim();
+      submitBtn.disabled = true;
+      statusEl.textContent = "Joining…";
+      statusEl.className = "waitlist-status";
 
-      <button class="btn-outline waitlist-toggle" type="button" onclick="openWaitlist(this)">
-        Sign up for Android waitlist
-      </button>
-
-      <form class="waitlist-form" onsubmit="return submitWaitlist(event)">
-        <div class="waitlist-row">
-          <input class="waitlist-input" type="email" placeholder="you@example.com" required autocomplete="email">
-          <button class="waitlist-submit" type="submit">Notify me</button>
-        </div>
-        <div class="waitlist-status"></div>
-      </form>
-    </div>
-  </div>
-</section>
-
-<script>
-  // Direct REST insert against Supabase's PostgREST API using the public
-  // anon key — same pattern the app itself uses client-side, safe to embed
-  // here because it's meant to be public and the android_waitlist table's
-  // RLS policy (migration 176) only allows anon INSERT, never SELECT/
-  // UPDATE/DELETE, so this key can't be used to read back or tamper with
-  // anyone else's signup even though it's sitting in this page's source.
-  var SUPABASE_URL = "https://sqkuvryccqpncligbvaq.supabase.co";
-  var SUPABASE_ANON_KEY = "sb_publishable_x5JlgZwEykHKdha5VpfbUQ_vP0wLBoM";
-
-  // Was ID-based (one hardcoded #waitlistForm/#waitlistEmail/etc), which
-  // only ever supported a single instance on the page — now the hero has
-  // its own copy of this same stack too, so this is rewritten to work off
-  // the specific form/button that was actually interacted with (via
-  // e.target / the button's own DOM position) instead of a fixed ID,
-  // supporting any number of instances on the page.
-  function openWaitlist(btn) {
-    btn.style.display = "none";
-    btn.nextElementSibling.classList.add("open");
-  }
-
-  function submitWaitlist(e) {
-    e.preventDefault();
-    var form = e.target;
-    var input = form.querySelector(".waitlist-input");
-    var submitBtn = form.querySelector(".waitlist-submit");
-    var statusEl = form.querySelector(".waitlist-status");
-    var email = input.value.trim();
-    submitBtn.disabled = true;
-    statusEl.textContent = "Joining…";
-    statusEl.className = "waitlist-status";
-
-    fetch(SUPABASE_URL + "/rest/v1/android_waitlist", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "apikey": SUPABASE_ANON_KEY,
-        "Authorization": "Bearer " + SUPABASE_ANON_KEY,
-        "Prefer": "return=minimal"
-      },
-      body: JSON.stringify({ email: email })
-    }).then(function (res) {
-      submitBtn.disabled = false;
-      if (res.ok) {
-        statusEl.textContent = "You're on the list — we'll email you when Android is ready.";
-        statusEl.className = "waitlist-status success";
-        input.value = "";
-      } else if (res.status === 409) {
-        statusEl.textContent = "That email's already on the list.";
-        statusEl.className = "waitlist-status success";
-      } else {
+      fetch(SUPABASE_URL + "/rest/v1/android_waitlist", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": SUPABASE_ANON_KEY,
+          "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+          "Prefer": "return=minimal"
+        },
+        body: JSON.stringify({ email: email })
+      }).then(function (res) {
+        submitBtn.disabled = false;
+        if (res.ok) {
+          statusEl.textContent = "You're on the list — we'll email you when Android is ready.";
+          statusEl.className = "waitlist-status success";
+          input.value = "";
+        } else if (res.status === 409) {
+          statusEl.textContent = "That email's already on the list.";
+          statusEl.className = "waitlist-status success";
+        } else {
+          statusEl.textContent = "Something went wrong — please try again.";
+          statusEl.className = "waitlist-status error";
+        }
+      }).catch(function () {
+        submitBtn.disabled = false;
         statusEl.textContent = "Something went wrong — please try again.";
         statusEl.className = "waitlist-status error";
-      }
-    }).catch(function () {
-      submitBtn.disabled = false;
-      statusEl.textContent = "Couldn't reach the server — check your connection and try again.";
-      statusEl.className = "waitlist-status error";
-    });
+      });
 
-    return false;
-  }
-</script>
-
-<footer>
-  <div class="wrap footer-grid">
-    <a class="footer-brand" href="#top">
-      <img src="assets/logo/snack-isle-logo.png" alt="">
-      Snack Isle
-    </a>
-    <div class="footer-links">
-      <a href="privacy.html">Privacy Policy</a>
-      <a href="terms.html">Terms of Use</a>
-      <a href="support.html">Support</a>
-    </div>
-  </div>
-  <p class="copyright">© 2026 Snack Isle. All snack opinions are the user's own.</p>
-</footer>
-
+      return false;
+    }
+  </script>
 </body>
 </html>
