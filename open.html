@@ -80,7 +80,22 @@
     // straight into a custom-scheme URL: only allow the characters an
     // actual expo-router path segment would ever contain.
     var safeTo = /^[A-Za-z0-9/_-]*$/.test(to) ? to : "";
-    var appLink = "snack-isle://" + safeTo;
+    // Referral code from an invite link, forwarded into the app so
+    // onboarding can pre-fill it. Without this the app's own ?ref=
+    // handler could never fire: the code was written into the invite
+    // message and into this page's URL, but dropped here, so the whole
+    // pre-fill path was dead.
+    //
+    // Same reflection guard as `to` above, but stricter because the shape
+    // is known exactly: six characters from profiles.referral_code's own
+    // alphabet (migration 246), which omits 0/O/1/I/L. Anything else is
+    // dropped rather than passed along. encodeURIComponent is a no-op on
+    // that character set and kept only so this stays safe if the pattern
+    // is ever loosened.
+    var ref = (params.get("ref") || "").toUpperCase();
+    var safeRef = /^[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{6}$/.test(ref) ? ref : "";
+    var appLink =
+      "snack-isle://" + safeTo + (safeRef ? "?ref=" + encodeURIComponent(safeRef) : "");
 
     var fallbackTimer = setTimeout(function () {
       window.location.href = document.getElementById("storeLink").href;
