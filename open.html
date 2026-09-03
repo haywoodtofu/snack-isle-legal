@@ -57,6 +57,23 @@
   // the "just JavaScript" middle ground: a visible redirect hop, hosted on
   // the same GitHub Pages site as the rest of the legal pages.
   (function () {
+    // Point the fallback at the store the visitor can actually install
+    // from. This link is hardcoded to the App Store in the markup, so
+    // before this an Android visitor without the app landed on an iOS
+    // listing and had no way to get Snack Isle at all -- which is the one
+    // job this page has. Matters most for invite links, where the whole
+    // point is reaching someone who does NOT have the app yet.
+    //
+    // Sniffing the user agent is crude, but it is the only signal a static
+    // page has, and the failure mode is symmetric: an unrecognised agent
+    // keeps the existing App Store link rather than guessing.
+    if (/android/i.test(navigator.userAgent)) {
+      var storeLink = document.getElementById("storeLink");
+      storeLink.href =
+        "https://play.google.com/store/apps/details?id=com.snackisle.app";
+      storeLink.textContent = "Get Snack Isle on Google Play";
+    }
+
     var params = new URLSearchParams(window.location.search);
     var to = params.get("to") || "";
     // Guards against an arbitrary/malicious `to` value being reflected
